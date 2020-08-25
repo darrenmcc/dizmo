@@ -16,29 +16,29 @@ import (
 type Config struct {
 	// HealthCheckPath is used by server to init the proper HealthCheckHandler.
 	// If empty, this will default to '/healthz'.
-	HealthCheckPath string `envconfig:"GIZMO_HEALTH_CHECK_PATH"`
+	HealthCheckPath string `envconfig:"DIZMO_HEALTH_CHECK_PATH"`
 
 	// MaxHeaderBytes can be used to override the default of 1<<20.
-	MaxHeaderBytes int `envconfig:"GIZMO_MAX_HEADER_BYTES"`
+	MaxHeaderBytes int `envconfig:"DIZMO_MAX_HEADER_BYTES"`
 
 	// ReadTimeout can be used to override the default http server timeout of 10s.
 	// The string should be formatted like a time.Duration string.
-	ReadTimeout time.Duration `envconfig:"GIZMO_READ_TIMEOUT"`
+	ReadTimeout time.Duration `envconfig:"DIZMO_READ_TIMEOUT"`
 
 	// WriteTimeout can be used to override the default http server timeout of 10s.
 	// The string should be formatted like a time.Duration string.
-	WriteTimeout time.Duration `envconfig:"GIZMO_WRITE_TIMEOUT"`
+	WriteTimeout time.Duration `envconfig:"DIZMO_WRITE_TIMEOUT"`
 
 	// IdleTimeout can be used to override the default http server timeout of 120s.
 	// The string should be formatted like a time.Duration string.
-	IdleTimeout time.Duration `envconfig:"GIZMO_IDLE_TIMEOUT"`
+	IdleTimeout time.Duration `envconfig:"DIZMO_IDLE_TIMEOUT"`
 
 	// ShutdownTimeout can be used to override the default http server shutdown timeout
 	// of 5m.
-	ShutdownTimeout time.Duration `envconfig:"GIZMO_SHUTDOWN_TIMEOUT"`
+	ShutdownTimeout time.Duration `envconfig:"DIZMO_SHUTDOWN_TIMEOUT"`
 
 	// GOMAXPROCS can be used to override the default GOMAXPROCS.
-	GOMAXPROCS int `envconfig:"GIZMO_GOMAXPROCS"`
+	GOMAXPROCS int `envconfig:"DIZMO_GOMAXPROCS"`
 
 	// HTTPAddr is the address the server implementation will bind to.
 	// The default is "" (bind to all interfaces)

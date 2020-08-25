@@ -135,17 +135,18 @@ func NewServer(svc Service) *Server {
 	return s
 }
 
+const TraceKey = "X-Cloud-Trace-Context"
+
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// populate context with helpful keys
 	ctx := httptransport.PopulateRequestContext(r.Context(), r)
 
 	// add google trace header to use in tracing and logging
-	const traceKey = "X-Cloud-Trace-Context"
-	trace := r.Header.Get(traceKey)
+	trace := r.Header.Get(TraceKey)
 	ctx = context.WithValue(ctx, CloudTraceContextKey, trace)
 
 	// apply trace context to any downstream grpc services we call
-	ctx = grpcmetadata.AppendToOutgoingContext(ctx, traceKey, trace)
+	ctx = grpcmetadata.AppendToOutgoingContext(ctx, TraceKey, trace)
 
 	// add a request scoped logger to the context
 	ctx = SetLogger(ctx, s.logger)
