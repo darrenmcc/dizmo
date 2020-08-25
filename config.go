@@ -49,9 +49,6 @@ type Config struct {
 	// RPCPort is the port the server implementation will serve RPC over.
 	// The default is 8081.
 	RPCPort int `envconfig:"RPC_PORT"`
-
-	// Enable pprof Profiling. Off by default.
-	EnablePProf bool `envconfig:"ENABLE_PPROF"`
 }
 
 func loadConfig() Config {
@@ -84,7 +81,7 @@ func loadConfig() Config {
 		runtime.GOMAXPROCS(cfg.GOMAXPROCS)
 	}
 	if cfg.HealthCheckPath == "" {
-		cfg.HealthCheckPath = "/healthz"
+		cfg.HealthCheckPath = "/"
 	}
 	if cfg.ShutdownTimeout.Nanoseconds() == 0 {
 		cfg.ShutdownTimeout = 5 * time.Minute
