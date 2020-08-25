@@ -1,4 +1,4 @@
-package gizmo
+package dizmo
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-// Config holds info required to configure a gizmo kit.Server.
+// Config holds info required to configure a dizmo kit.Server.
 //
 // This struct is loaded from the environment at Run and only made public to expose
 // for documentation.

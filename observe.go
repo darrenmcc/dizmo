@@ -1,7 +1,7 @@
 // Package observe provides functions
 // that help with setting tracing/metrics
 // in cloud providers, mainly GCP.
-package gizmo
+package dizmo
 
 import (
 	"io/ioutil"

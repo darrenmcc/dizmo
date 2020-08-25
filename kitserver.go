@@ -1,5 +1,5 @@
 // Package kit implements an opinionated server based on go-kit primitives.
-package gizmo
+package dizmo
 
 import (
 	"context"
@@ -25,7 +25,7 @@ import (
 	grpcmetadata "google.golang.org/grpc/metadata"
 )
 
-// Server encapsulates all logic for registering and running a gizmo kit server.
+// Server encapsulates all logic for registering and running a dizmo kit server.
 type Server struct {
 	logger   log.Logger
 	logClose func() error

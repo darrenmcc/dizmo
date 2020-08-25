@@ -1,4 +1,4 @@
-package gizmo
+package dizmo
 
 import (
 	"net/http"

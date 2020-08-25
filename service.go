@@ -1,4 +1,4 @@
-package gizmo
+package dizmo
 
 import (
 	"net/http"
@@ -19,7 +19,7 @@ type HTTPEndpoint struct {
 }
 
 // Service is the interface of mixed HTTP/gRPC that can be registered and
-// hosted by a gizmo/server/kit server. Services provide hooks for service-wide options
+// hosted by a dizmo/server/kit server. Services provide hooks for service-wide options
 // and middlewares and can be used as a means of dependency injection.
 // In general, a Service should just contain the logic for deserializing and authorizing
 // requests, passing the request to a business logic interface abstraction,
