@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	stdlog "log"
-	"os"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -12,21 +11,6 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// NewLogger will inspect the environment and, if running in the Google App Engine,
-// Google Kubernetes Engine, Google Compute Engine or AWS EC2 environment,
-// it will return a new Stackdriver logger annotated with the current
-// server's project ID, service ID and version and other environment specific values.
-// If not in App Engine, GKE, GCE or AWS EC2 - a normal JSON logger pointing to stdout
-// will be returned.
-// This function can be used for services that need to log information outside the
-// context of an inbound request.
-// When using the Stackdriver logger, any go-kit/log/levels will be translated to
-// Stackdriver severity levels.
-// The logID field is used when the server is deployed in a Stackdriver enabled environment.
-// If an empty string is provided, "gae_log" will be used in App Engine and "stdout" elsewhere.
-// For more information about to use of logID see the documentation here: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry#FIELDS.log_name
-// To speed up start up time in non-GCP enabled environments, this function also checks
-// the if projectID is empty and will use a basic JSON logger writing to stdout if not set.
 func NewLogger(ctx context.Context, projectID, serviceID, svcVersion string) (log.Logger, func() error) {
 	if projectID == "" {
 		// this isn't a GCP environment, just use a stdlib logger
@@ -35,10 +19,7 @@ func NewLogger(ctx context.Context, projectID, serviceID, svcVersion string) (lo
 
 	lg, cl, err := newStackdriverLogger(ctx, projectID, serviceID, svcVersion)
 	if err != nil {
-		lg = newJSONLogger()
-		cl = func() error { return nil }
-		lg.Log("error", err,
-			"message", "unable to initialize Stackdriver logger, falling back to stdout JSON logging.")
+		return sdtlibLogger{}, func() error { return nil }
 	}
 	return lg, cl
 }
@@ -59,10 +40,6 @@ func (sdtlibLogger) Log(keyvals ...interface{}) error {
 		}
 	}
 	return nil
-}
-
-func newJSONLogger() log.Logger {
-	return log.NewJSONLogger(log.NewSyncWriter(os.Stdout))
 }
 
 // SetLogger sets log.Logger to the context and returns new context with logger.
@@ -109,38 +86,15 @@ func addLogKeyVals(ctx context.Context, l log.Logger) log.Logger {
 	return l
 }
 
-// LogDebugf will format the given string with the arguments then log to the server
-// logger with the key "message" along with all the common request headers or gRPC
-// metadata.
-// Arguments are handled in the manner of fmt.Printf.
-// This message will have a "debug" log level associated with it.
-func LogDebugf(ctx context.Context, format string, v ...interface{}) error {
+func Debugf(ctx context.Context, format string, v ...interface{}) error {
 	return level.Debug(Logger(ctx)).Log("message", fmt.Sprintf(format, v...))
 }
-
-// LogInfof will format the given string with the arguments then log to the server
-// logger with the key "message" along with all the common request headers or gRPC
-// metadata.
-// Arguments are handled in the manner of fmt.Printf.
-// This message will have an "info" log level associated with it.
-func LogInfof(ctx context.Context, format string, v ...interface{}) error {
+func Infof(ctx context.Context, format string, v ...interface{}) error {
 	return level.Info(Logger(ctx)).Log("message", fmt.Sprintf(format, v...))
 }
-
-// LogWarningf will the format given string with the arguments then log to the server
-// logger with the key "message" along with all the common request headers or gRPC
-// metadata.
-// Arguments are handled in the manner of fmt.Printf.
-// This message will have a "warn" log level associated with it.
-func LogWarningf(ctx context.Context, format string, v ...interface{}) error {
+func Warningf(ctx context.Context, format string, v ...interface{}) error {
 	return level.Warn(Logger(ctx)).Log("message", fmt.Sprintf(format, v...))
 }
-
-// LogErrorf will format the given string with the arguments then log to the server
-// logger with the key "message" along with all the common request headers or gRPC
-// metadata.
-// Arguments are handled in the manner of fmt.Printf.
-// This message will have an "error" log level associated with it.
-func LogErrorf(ctx context.Context, format string, v ...interface{}) error {
+func Errorf(ctx context.Context, format string, v ...interface{}) error {
 	return level.Error(Logger(ctx)).Log("message", fmt.Sprintf(format, v...))
 }

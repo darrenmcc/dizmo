@@ -153,7 +153,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	defer func() {
 		if reason := recover(); reason != nil {
-			LogErrorf(ctx, "the server encountered a panic: %v: stracktrace: %s", reason, debug.Stack())
+			Errorf(ctx, "the server encountered a panic: %v: stracktrace: %s", reason, debug.Stack())
 
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprint(w, http.StatusText(http.StatusInternalServerError))
