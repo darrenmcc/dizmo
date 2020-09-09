@@ -39,6 +39,10 @@ func GoogleProjectID() string {
 		if err != nil {
 			return ""
 		}
+		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			return ""
+		}
 		b, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			return ""
