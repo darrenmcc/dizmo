@@ -4,10 +4,9 @@
 package dizmo
 
 import (
-	"io/ioutil"
-	"net/http"
 	"os"
 
+	"cloud.google.com/go/compute/metadata"
 	"contrib.go.opencensus.io/exporter/stackdriver"
 )
 
@@ -28,28 +27,14 @@ func NewStackdriverExporter(projectID, svcName, svcVersion string) (*stackdriver
 // metadata server if it's not injected into the environment by default.
 func GoogleProjectID() string {
 	id := os.Getenv("GOOGLE_CLOUD_PROJECT")
-	if id == "" {
-		const url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
-		req, err := http.NewRequest(http.MethodGet, url, nil)
-		if err != nil {
-			return ""
-		}
-		req.Header.Add("Metadata-Flavor", "Google")
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return ""
-		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			return ""
-		}
-		b, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return ""
-		}
-		id = string(b)
-		os.Setenv("GOOGLE_CLOUD_PROJECT", id)
+	if id != "" {
+		return id
 	}
+	id, err := metadata.ProjectID()
+	if err != nil {
+		return ""
+	}
+	os.Setenv("GOOGLE_CLOUD_PROJECT", id)
 	return id
 }
 
